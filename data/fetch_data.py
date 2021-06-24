@@ -5,7 +5,15 @@ import csv
 pypyodbc.lowercase = False
 conn = pypyodbc.connect(
     r"Driver={Microsoft Access Driver (*.mdb, *.accdb)};" +
-    r"Dbq=C:~/MyDocuments/CLLabby/2021\ Summer\ Research/Laser\ Powder\ Bed\ Fusion\parameter_data.accdb;")
+    r"Dbq=C:parameter_data.accdb;")
+
+print("\nconnected to database...\n")
+
+# OPEN CURSOR AND EXECUTE SQL
+cur = conn.cursor()
+cur.execute("SELECT * FROM PorosityPlessis");
+
+print("exporting data to csv...\n")
 
 # OPEN CSV AND ITERATE THROUGH RESULTS
 with open('am_data.csv', 'w', newline='') as f:
@@ -15,3 +23,5 @@ with open('am_data.csv', 'w', newline='') as f:
 
 cur.close()
 conn.close()
+
+print("done.")
