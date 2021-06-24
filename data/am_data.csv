@@ -1,3 +1,4 @@
+ID,StudySample,LaserPowerHatch,LaserSpeedHatch,HatchSpacing,LaserPowerContour,Porosity,LayerHeight,EnergyDensityCalculated,Machine,Powder,MicroCTScan,HatchOffsetFromCountour
 1,Plessis_1-1,280.000,1200.000,0.140,150.000,0.013,0.030,55.555555555555555555555555556,EOS M290,EOS-supplied Ti6Al4V ELI,,0.01500
 2,Plessis_1-2,252.000,1200.000,0.140,135.000,0.008,0.030,50,EOS M290,EOS-supplied Ti6Al4V ELI,,0.01500
 3,Plessis_1-3,224.000,1200.000,0.140,120.000,0.007,0.030,44.444444444444444444444444444,EOS M290,EOS-supplied Ti6Al4V ELI,,0.01500
