@@ -64,10 +64,21 @@ and high quality parts
   - re-coater hopping, recoater streaking, debris, super elevation, part
   damage, incomplete spreading
 - Process Parameter Optimization
+  - ML was mainly used to link their key process parameters to the quality indicators
+  at two levels, namely mesoscale level (i.e. porosity or relative density, melt pool
+  geometries) and macroscale level (i.e. mechanical properties).
+    - Do the mesoscale levels intrinsically determine the macroscale properties, and
+    if so to what degree (this is its own research question, could us NN to predict how
+    varying levels of porosity/relative density, melt pool geometries affect mech. props.)
+      - would it be possible for 
+    - If so, we should focus on optimizing the mesoscale with the assumption that the mechanical
+    properties will improve
+    - It is empircally proven that formability, microstructure, mechanical properties, and residual
+    stresses are determined by single tracks governed by molten pool dynamics <-- find citation
   - preset parameters
-    - preheating the baseplate
+    - preheating the baseplate, gas enviornment
   - there has been extensive research already and compilation of DOE methods
-  to determine which paramters affect certain performance features the most
+  to determine which parameters affect certain performance features the most
     - for ex. tensile strength is affected by hatch spacing and powder temp,
     whereas porosity is not affected as much by these factors (see table)
     - build models for each metric of performance, train the data on
@@ -81,8 +92,8 @@ and high quality parts
   give different results even when keeping parameters consistent
     - therefore, for a specific printer, you need to trian on data consistent
     with that printer
-  - live parameters
-    - can use deep reinforcement learning as described in Ogoke to change
+  - dynamic parameters in situ
+    - can use deep reinforcement learning as described in [Ogoke](https://arxiv.org/pdf/2102.03355.pdf) to change
     scan speed based on temperature changes, ie real time monitoring and
     control methods
       - how do we model thermal dynamics in several dimensions, including
