@@ -13,10 +13,7 @@ if argc != 3:
 
 fpath = sys.argv[1]
 
-try:
-    out_name = input('output file name >> ')
-except:
-    out_name = 'out_file'
+out_name = 'interim'
 
 if sys.argv[2] == 'h':
     print('\nfinding file...')
@@ -52,13 +49,17 @@ else:
             r"DRIVER={Microsoft Access Driver (*.mdb, *.accdb)};" +
             r"Dbq=C:../data/raw/parameter_data.accdb;")
         except:
-            print("\ndefault path not found")
-            print("unix systems not supported on access")
+            print("\nDefault path not found // Unix systems not supported on MS Access")
             exit()
 
     # OPEN CURSOR AND EXECUTE SQL
     cur = conn.cursor()
-    cur.execute("SELECT * FROM PorosityPlessis");
+    try:
+        table = input('select table >>> ')
+        cur.execute(f"SELECT * FROM {table}")
+    except:
+        print("table not found")
+        exit()
 
     print("\nexporting data to csv...")
 

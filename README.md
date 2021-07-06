@@ -4,22 +4,14 @@ Repository for research in [prediciting material performance of additively manuf
 
 ## current objectives
 
--- compile list of types of printers used by researchers
+-- find substantial data, so far NIST is seeming the best option due to paywalls elsewhere (FEM to generate data?)
 
--- figure out the output conventions of these printers
-
--- reach out to research authors to retrieve their data if it's not easily found
+-- outreach to labs, professors, researchers, AM organizations
 
 -- if the data is muddled (as it always is), match the printer and conventions to the data to figure out what we're working with
 
-
-## short-term goals
-
--- find a decent pool of data to start working with
-
--- process the data using the conventions above
-
--- using the features and labels Manion found in his report, starting building an analytical framework
+-- set up framework to deploy models
+    - are we going to actually use these models or is this supposed to be theoretical? How much effort should I put into making it an actual web app vs focusing on lit review and developing a theoretical framework
 
 ## long-term goals
 
