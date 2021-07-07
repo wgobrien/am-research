@@ -18,8 +18,8 @@ shrink the supply chain, and have flexible, lower cost manufacturing will be
 very valuable
   - Decreases material waste, local control of materials, mass customization
 - Laser powder bed fusion is a popular and effective method of printing metals
-  - Able to achieve extremely detailed parts and complex topolgies
-  - applications in aerospace, defense, and biomdeical industries
+  - Able to achieve extremely detailed parts and complex topologies
+  - applications in aerospace, defense, and biomedical industries
 ### How are we going to tackle this issue?
 - As outlined below, there are many applications of machine learning in the cycle
 of additive manufacturing

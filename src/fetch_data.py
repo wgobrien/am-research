@@ -1,40 +1,24 @@
+#!/usr/bin/python3
+# fetch_data.py
+# William O'Brien
+
 import pypyodbc
 import h5py as hdf
 import pandas as pd
 import csv
 import sys
 
-argc = len(sys.argv)
+def fetch():
+    argc = len(sys.argv)
 
-if argc != 3:
-    print("usage: fetch_data.py <file_path> <data_type>")
-    print("<data_type>: h/a (hdf/MS access)")
-    exit(1)
+    if argc != 2:
+        print("usage: fetch_data.py <file_path>")
+        exit(1)
 
-fpath = sys.argv[1]
+    fpath = sys.argv[1]
 
-out_name = 'interim'
+    out_name = 'interim_data'
 
-if sys.argv[2] == 'h':
-    print('\nfinding file...')
-    def hdf_to_csv(f):
-        print('\nloading file...')
-        try:
-            dataset = hdf.File(f, 'r')
-        except:
-            print('\nfile not found...exit')
-            exit()
-
-        print('\nconverting to dataframe...')
-        # this is hardcoded to exclude image files, to include all headers,
-        # change format to pd.DataFrame(dataset) or specify known headers
-        data = pd.DataFrame(dataset['data'])
-
-        print('\nloading csv...')
-        data.to_csv(f'../data/interim/{out_name}.csv')
-        print('\ndone.')
-    hdf_to_csv(fpath)
-else:
     # MS ACCESS DB CONNECTION
     pypyodbc.lowercase = False
     try:
@@ -55,7 +39,7 @@ else:
     # OPEN CURSOR AND EXECUTE SQL
     cur = conn.cursor()
     try:
-        table = input('select table >>> ')
+        table = input('\nselect table >>> ')
         cur.execute(f"SELECT * FROM {table}")
     except:
         print("table not found")
@@ -75,4 +59,5 @@ else:
 
     print("\ndone.")
 
-
+if __name__ == '__main__':
+    fetch()
