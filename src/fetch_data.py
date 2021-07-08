@@ -1,23 +1,28 @@
 #!/usr/bin/python3
 # fetch_data.py
-# William O'Brien
+# William O'Brien 07/08/2021
 
 import pypyodbc
-import h5py as hdf
 import pandas as pd
 import csv
 import sys
 
 def fetch():
     argc = len(sys.argv)
-
-    if argc != 2:
-        print("usage: fetch_data.py <file_path>")
-        exit(1)
-
-    fpath = sys.argv[1]
-
-    out_name = 'interim_data'
+    # optional usuage: fetch_data.py <file_path> <file_name>
+    
+    if argc > 1:
+        # optional: can adjust file path on CL
+        fpath = sys.argv[1]
+        # optional: can edit file out name on CL
+        if argc == 3:
+            out_name = sys.argv[2]
+        if argc > 3:
+            print('optional usuage: fetch_data.py <file_path> <file_name>')
+            exit(1)
+    else:
+        fpath = '../data/raw/research_data.accdb'
+        out_name = 'interim_data'
 
     # MS ACCESS DB CONNECTION
     pypyodbc.lowercase = False
@@ -25,16 +30,16 @@ def fetch():
         conn = pypyodbc.connect(
             r"DRIVER={Microsoft Access Driver (*.mdb, *.accdb)};" +
             f"Dbq=C:{fpath};")
-        print("\nconnected to database...\n")
+        print("\nconnected to database...")
     except:
         print('\nfile path not found...trying default path')
         try:
             conn = pypyodbc.connect(
             r"DRIVER={Microsoft Access Driver (*.mdb, *.accdb)};" +
-            r"Dbq=C:../data/raw/parameter_data.accdb;")
+            r"Dbq=C:../data/raw/research_data.accdb;")
         except:
             print("\nDefault path not found // Unix systems not supported on MS Access")
-            exit()
+            exit(1)
 
     # OPEN CURSOR AND EXECUTE SQL
     cur = conn.cursor()
@@ -42,8 +47,8 @@ def fetch():
         table = input('\nselect table >>> ')
         cur.execute(f"SELECT * FROM {table}")
     except:
-        print("table not found")
-        exit()
+        print("\ntable not found")
+        exit(1)
 
     print("\nexporting data to csv...")
 
