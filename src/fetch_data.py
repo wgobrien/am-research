@@ -6,6 +6,7 @@ import pypyodbc
 import pandas as pd
 import csv
 import sys
+import os
 
 def fetch():
     argc = len(sys.argv)
@@ -34,11 +35,14 @@ def fetch():
     except:
         print('\nfile path not found...trying default path')
         try:
+            default_path = '../data/raw/research_data.accdb'
+            p = os.path.join(os.path.dirname(__file__), default_path)
             conn = pypyodbc.connect(
             r"DRIVER={Microsoft Access Driver (*.mdb, *.accdb)};" +
-            r"Dbq=C:../data/raw/research_data.accdb;")
-        except:
-            print("\nDefault path not found // Unix systems not supported on MS Access")
+            f"Dbq=C:{{{p}}};")
+        except Exception as e:
+            print("\ndefault path not found | U=unix systems not supported on MS Access")
+            print("error:", e)
             exit(1)
 
     # OPEN CURSOR AND EXECUTE SQL
@@ -53,7 +57,9 @@ def fetch():
     print("\nexporting data to csv...")
 
     # OPEN CSV AND ITERATE THROUGH RESULTS
-    with open(f'../data/interim/{out_name}.csv', 'w', newline='') as f:
+    out_path = f'../data/interim/{out_name}.csv'
+    f_out = os.path.join(os.path.dirname(__file__), out_path)
+    with open(f_out, 'w', newline='') as f:
         writer = csv.writer(f)
         writer.writerow(i[0] for i in cur.description)
         for row in cur.fetchall() :
