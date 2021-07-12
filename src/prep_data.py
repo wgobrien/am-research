@@ -3,10 +3,12 @@
 # William O'Brien 07/08/2021
 
 import pandas as pd
+import os
 
 def prep(tt_split=.2, seed=100):
     fname = 'interim_data'
-    param_data = pd.read_csv(f'../data/interim/{fname}.csv')
+    f = os.path.join(os.path.dirname(__file__), f'../data/interim/{fname}.csv')
+    param_data = pd.read_csv(f)
 
     # data cleaning
     try:
@@ -24,8 +26,11 @@ def prep(tt_split=.2, seed=100):
     test_data = param_data.drop(train_data.index).sample(frac=1, random_state=seed).reset_index()
 
     print("\nexporting cleaned data...")
-    train_data.to_csv('../data/processed/train.csv')
-    test_data.to_csv('../data/processed/test.csv')
+    f_train = os.path.join(os.path.dirname(__file__), '../data/processed/train.csv')
+    train_data.to_csv(f_train)
+    
+    f_test = os.path.join(os.path.dirname(__file__), '../data/processed/test.csv')
+    test_data.to_csv(f_test)
 
     print("\ndata preparation complete")
 

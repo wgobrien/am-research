@@ -8,6 +8,7 @@ else
 	SYSTEM_PYTHON=python3
 endif
 
+SRC_ROOT=src
 VENV_ROOT=env
 VENV_BIN=$(VENV_ROOT)/bin
 VENV_PIP=$(VENV_BIN)/pip
@@ -55,4 +56,31 @@ install: virtualenv
 uninstall:
 	@echo "Uninstalling package from the system"
 	$(VENV_PIP) uninstall am-research
+	@rm -rf env
 	@echo "Succesfully uninstalled am-research"
+
+.PHONY: pipe-test
+pipe-test: fetch prep train infer
+
+.PHONY: test
+test: train infer
+
+.PHONY: fetch
+fetch:
+	@$(SYSTEM_PYTHON) $(SRC_ROOT)/fetch_data.py
+
+.PHONY: prep
+prep:
+	@$(SYSTEM_PYTHON) $(SRC_ROOT)/prep_data.py
+
+.PHONY: train
+train:
+	@$(SYSTEM_PYTHON) $(SRC_ROOT)/train.py
+
+.PHONY: infer
+infer:
+	@$(SYSTEM_PYTHON) $(SRC_ROOT)/inference.py
+
+.PHONY: clean
+clean:
+	@rm models

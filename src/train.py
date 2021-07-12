@@ -8,10 +8,12 @@ from sklearn import linear_model
 from sklearn.linear_model import LinearRegression
 from sklearn import svm
 import pickle
+import os
 
 def train():
     fpath = '../data/processed/train.csv'
-    train = pd.read_csv(fpath)
+    f_train = os.path.join(os.path.dirname(__file__), fpath)
+    train = pd.read_csv(f_train)
 
     train_vals = train.values
     
@@ -33,9 +35,10 @@ def train():
     lr_model2 = LinearRegression()
     lr_model2.fit(X, y)
 
-    pickle.dump(lr_model1, open('../models/lr_model1.sav', 'wb'))
-    pickle.dump(svr_model1, open('../models/svr_model1.sav', 'wb'))
-    pickle.dump(lr_model2, open('../models/lr_model2.sav', 'wb'))
+    models_path = os.path.join(os.path.dirname(__file__), '../models/')
+    pickle.dump(lr_model1, open(os.path.join(models_path, 'lr_model1.sav'), 'wb'))
+    pickle.dump(svr_model1, open(os.path.join(models_path, 'svr_model1.sav'), 'wb'))
+    pickle.dump(lr_model2, open(os.path.join(models_path, 'lr_model2.sav'), 'wb'))
 
     print('models built successfully.')
 
