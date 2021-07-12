@@ -83,4 +83,5 @@ infer:
 
 .PHONY: clean
 clean:
-	@rm models
+	@$(RM) ./models/*
+	@echo "deleting binary files"

@@ -3,14 +3,15 @@
 # William O'Brien 07/08/2021
 
 import pandas as pd
-from sklearn import model_selection
-from sklearn import linear_model
 from sklearn.linear_model import LinearRegression
 from sklearn import svm
 import pickle
 import os
 
 def train():
+
+    print('training models...')
+
     fpath = '../data/processed/train.csv'
     f_train = os.path.join(os.path.dirname(__file__), fpath)
     train = pd.read_csv(f_train)
