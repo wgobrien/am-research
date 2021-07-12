@@ -74,7 +74,7 @@ prep:
 	@$(SYSTEM_PYTHON) $(SRC_ROOT)/prep_data.py
 
 .PHONY: train
-train:
+train: clean
 	@$(SYSTEM_PYTHON) $(SRC_ROOT)/train.py
 
 .PHONY: infer

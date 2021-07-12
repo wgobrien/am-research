@@ -25,6 +25,7 @@ very valuable
 of additive manufacturing
   - Machine learning helps to find optimizations of processes that would otherwise
   require intensive DOE, trial and error, or highly complex computational and physical analysis
+  - the additive manufacturing procedure is a nonlinear complex multivariable system
 - We will focus specifically on the section AM Process: Parameter Optimization as outlined
 in this [paper](https://www.sciencedirect.com/science/article/pii/S2214860420309106#bib0865)
 
