@@ -41,7 +41,7 @@ def fetch():
             r"DRIVER={Microsoft Access Driver (*.mdb, *.accdb)};" +
             f"Dbq=C:{{{p}}};")
         except Exception as e:
-            print("\ndefault path not found | U=unix systems not supported on MS Access")
+            print("\ndefault path not found | unix systems not supported on MS Access")
             print("error:", e)
             exit(1)
 

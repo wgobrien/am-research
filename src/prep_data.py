@@ -22,7 +22,7 @@ def prep(tt_split=.2, seed=100):
         except:
             print(f"already dropped {col}")
     # parameters are ordered before labels
-    param_data.columns = ["LaserPowerHatch","LaserSpeedHatch","HatchSpacing","LaserPowerContour","EnergyDensityCalculated","Porosity"]
+    param_data = param_data[["LaserPowerHatch","LaserSpeedHatch","HatchSpacing","LaserPowerContour","EnergyDensityCalculated","Porosity"]]
 
 
     # test train split, random sampling - LEAVE ALONE

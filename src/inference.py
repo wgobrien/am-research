@@ -13,16 +13,13 @@ def infer():
     test = pd.read_csv(test_path)
     test_vals = test.values
     
-    X = test_vals[:,1:-1]
-    y = test_vals[:,:-2:-1].T[0]
+    X = test_vals[:,1:-2]
+    y = test_vals[:,-1]
 
     # path to models
     models_path = os.path.join(os.path.dirname(__file__), '../models/')
 
     # load and score models
-    lr1_path = os.path.join(models_path, 'lr_model1.sav')
-    LR1 = pickle.load(open(lr1_path, 'rb'))
-    LR1_score = LR1.score(X, y)
 
     svr1_path = os.path.join(models_path, 'svr_model1.sav')
     SVR1 = pickle.load(open(svr1_path, 'rb'))
@@ -33,16 +30,15 @@ def infer():
     MLP_score = MLP.score(X, y)
 
     # change parameters to energy density
-    X = test_vals[:,-2:-1]
+    X = test_vals[:,-2].reshape(-1,1)
     
     svr2_path = os.path.join(models_path, 'svr_model2.sav')
     SVR2 = pickle.load(open(svr2_path, 'rb'))
     SVR2_score = SVR2.score(X, y)
     
     print('---------------------')
-    print('LR Score:', LR1_score)
-    print('SVR Score Energy Density:', SVR2_score)
     print('SVR Score:', SVR1_score)
+    print('SVR Score Energy Density:', SVR2_score)
     print('MLP Score:', MLP_score)
     print('---------------------')
 

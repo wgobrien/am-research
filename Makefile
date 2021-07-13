@@ -3,22 +3,26 @@ REQUIREMENTS=requirements.txt
 # Detects which OS is being used
 # Only relevant for virtual environment creation
 ifeq ($(OS), Windows_NT)
-	SYSTEM_PYTHON=py
+	SYSTEM_PYTHON=python
+	VENV_ROOT=env
+	VENV_BIN=$(VENV_ROOT)/Scripts
+	VENV_PIP=$(VENV_BIN)/pip3
+	VENV_PYTHON=$(VENV_BIN)/python
 else
 	SYSTEM_PYTHON=python3
+	VENV_ROOT=env
+	VENV_BIN=$(VENV_ROOT)/bin
+	VENV_PIP=$(VENV_BIN)/pip -m
+	VENV_PYTHON=$(VENV_BIN)/python
 endif
 
 SRC_ROOT=src
-VENV_ROOT=env
-VENV_BIN=$(VENV_ROOT)/bin
-VENV_PIP=$(VENV_BIN)/pip
-VENV_PYTHON=$(VENV_BIN)/python
 
 virtualenv:
 	@echo "Making virtual environment..."
 	@$(SYSTEM_PYTHON) -m venv env
 	@echo "Installing all dependencies..."
-	$(VENV_PIP) install --upgrade pip
+	$(VENV_PIP) install -U pip
 	$(VENV_PIP) install -r $(REQUIREMENTS)
 
 all:  uninstall install
@@ -67,7 +71,7 @@ test: train infer
 
 .PHONY: fetch
 fetch:
-	@$(SYSTEM_PYTHON) $(SRC_ROOT)/fetch_data.py
+	@$(SYSTEM_PYTHON) $(SRC_ROOT)/fetch_data.py ../data/raw/research_data.accdb interim_data.csv
 
 .PHONY: prep
 prep:
