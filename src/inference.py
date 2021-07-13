@@ -3,8 +3,6 @@
 # William O'Brien 07/08/2021
 
 import pandas as pd
-from sklearn.metrics import mean_squared_error
-import numpy as np
 import pickle
 import os
 
@@ -30,18 +28,22 @@ def infer():
     SVR1 = pickle.load(open(svr1_path, 'rb'))
     SVR1_score = SVR1.score(X, y)
 
+    mlp_path = os.path.join(models_path, 'mlp_regressor.sav')
+    MLP = pickle.load(open(mlp_path, 'rb'))
+    MLP_score = MLP.score(X, y)
+
     # change parameters to energy density
-    #X = test_vals[:,-2:-1]
+    X = test_vals[:,-2:-1]
     
-    #lr2_path = os.path.join(models_path, 'lr_model2.sav')
-    #LR2 = pickle.load(open(lr2_path, 'rb'))
-    #LR2_score = LR2.score(X, y)
+    svr2_path = os.path.join(models_path, 'svr_model2.sav')
+    SVR2 = pickle.load(open(svr2_path, 'rb'))
+    SVR2_score = SVR2.score(X, y)
     
     print('---------------------')
     print('LR Score:', LR1_score)
-    #print('LR Score Energy Density:', LR2_score)
+    print('SVR Score Energy Density:', SVR2_score)
     print('SVR Score:', SVR1_score)
-    print('SVR MSE:', mean_squared_error(y, SVR1.predict(X)))
+    print('MLP Score:', MLP_score)
     print('---------------------')
 
 if __name__ == '__main__':

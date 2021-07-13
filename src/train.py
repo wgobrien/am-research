@@ -4,6 +4,7 @@
 
 import pandas as pd
 from sklearn.linear_model import LinearRegression
+from sklearn.neural_network import MLPRegressor
 from sklearn import svm
 import pickle
 import os
@@ -27,19 +28,23 @@ def train():
     lr_model1 = LinearRegression()
     lr_model1.fit(X, y)
 
-    svr_model1 = svm.SVR()
+    svr_model1 = svm.SVR(kernel='poly', degree=2)
     svr_model1.fit(X, y)
+
+    mlp_regressor = MLPRegressor(solver='lbfgs')
+    mlp_regressor.fit(X, y)
 
     # EnergyDensityCalculated
     X = train_vals[:,-2:-1]
     
-    lr_model2 = LinearRegression()
-    lr_model2.fit(X, y)
+    svr_model2 = svm.SVR(kernel='poly', degree=2)
+    svr_model2.fit(X, y)
 
     models_path = os.path.join(os.path.dirname(__file__), '../models/')
     pickle.dump(lr_model1, open(os.path.join(models_path, 'lr_model1.sav'), 'wb'))
     pickle.dump(svr_model1, open(os.path.join(models_path, 'svr_model1.sav'), 'wb'))
-    pickle.dump(lr_model2, open(os.path.join(models_path, 'lr_model2.sav'), 'wb'))
+    pickle.dump(mlp_regressor, open(os.path.join(models_path, 'mlp_regressor.sav'), 'wb'))
+    pickle.dump(svr_model2, open(os.path.join(models_path, 'svr_model2.sav'), 'wb'))
 
     print('models built successfully.')
 
