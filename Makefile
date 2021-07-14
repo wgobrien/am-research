@@ -12,7 +12,7 @@ else
 	SYSTEM_PYTHON=python3
 	VENV_ROOT=env
 	VENV_BIN=$(VENV_ROOT)/bin
-	VENV_PIP=$(VENV_BIN)/pip -m
+	VENV_PIP=$(VENV_BIN)/pip3
 	VENV_PYTHON=$(VENV_BIN)/python
 endif
 
@@ -22,7 +22,7 @@ virtualenv:
 	@echo "Making virtual environment..."
 	@$(SYSTEM_PYTHON) -m venv env
 	@echo "Installing all dependencies..."
-	$(VENV_PIP) install -U pip
+	$(VENV_PIP) install --upgrade pip
 	$(VENV_PIP) install -r $(REQUIREMENTS)
 
 all:  uninstall install
