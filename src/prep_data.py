@@ -6,6 +6,8 @@ import pandas as pd
 import os
 
 def prep(tt_split=.2, seed=100):
+    print("--------------------\nProcessing Data\n--------------------")
+
     # reading in transformed csv data from interim - EDIT fname as needed or read in additional files for cleaning
     fname = 'interim_data'
     f = os.path.join(os.path.dirname(__file__), f'../data/interim/{fname}.csv')
@@ -23,7 +25,9 @@ def prep(tt_split=.2, seed=100):
             print(f"already dropped {col}")
     # parameters are ordered before labels
     param_data = param_data[["LaserPowerHatch","LaserSpeedHatch","HatchSpacing","LaserPowerContour","EnergyDensityCalculated","Porosity"]]
-
+    
+    # normalize porosity
+    param_data.Porosity = param_data.Porosity / param_data.Porosity.sum()
 
     # test train split, random sampling - LEAVE ALONE
     pct = 1 - tt_split

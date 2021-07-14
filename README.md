@@ -23,3 +23,12 @@ Repository for research in [prediciting material performance of additively manuf
 - Create infrastructure that makes training and testing with new data easy
   - current code is commented to make using this codebase easy, should only require simple edits for specific needs directed by the data and report
 - Explore patterns and analyze insights, generate final report
+
+
+### Installs/Requirements
+- Package requirements are provided in requirements.txt
+- On the chance install fails, try an alternative with the main pacakges (excluding dependencies) listed below
+  - Ex] Install worked on my Mac but failed on Windows for some reason, despite pip and python being up to date and working in a conda environment
+- Macro-requirements
+  - pandas, pypyodbc, scikit-learn, tensorflow, matplotlib
+  - other packages in requirements.txt were installed as dependencies of these packages (numpy for example)

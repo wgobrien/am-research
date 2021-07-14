@@ -7,7 +7,7 @@ import pickle
 import os
 
 def infer():
-
+    print("--------------------\nInference & Scoring\n--------------------")
     # read in test data, split parameters and labels
     test_path = os.path.join(os.path.dirname(__file__), '../data/processed/test.csv')
     test = pd.read_csv(test_path)

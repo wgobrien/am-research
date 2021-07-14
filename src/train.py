@@ -10,12 +10,11 @@ import os
 
 def train():
 
-    print('training models...')
+    print("--------------------\nTraining Models\n--------------------")
 
     fpath = '../data/processed/train.csv'
     f_train = os.path.join(os.path.dirname(__file__), fpath)
     train = pd.read_csv(f_train)
-
     train_vals = train.values
     
     # hard coded columns for parameter selection

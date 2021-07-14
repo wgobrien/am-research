@@ -9,12 +9,14 @@ import sys
 import os
 
 def fetch():
+    print("--------------------\nFetching Data\n--------------------")
     argc = len(sys.argv)
     # optional usuage: fetch_data.py <file_path> <file_name>
     
     if argc > 1:
         # optional: can adjust file path on CL
         fpath = sys.argv[1]
+        out_name = 'interim_data'
         # optional: can edit file out name on CL
         if argc == 3:
             out_name = sys.argv[2]
@@ -31,15 +33,16 @@ def fetch():
         conn = pypyodbc.connect(
             r"DRIVER={Microsoft Access Driver (*.mdb, *.accdb)};" +
             f"Dbq=C:{fpath};")
-        print("\nconnected to database...")
+        print("connected to database...")
     except:
         print('\nfile path not found...trying default path')
         try:
             default_path = '../data/raw/research_data.accdb'
             p = os.path.join(os.path.dirname(__file__), default_path)
+
             conn = pypyodbc.connect(
             r"DRIVER={Microsoft Access Driver (*.mdb, *.accdb)};" +
-            f"Dbq=C:{{{p}}};")
+            f"Dbq={p};")
         except Exception as e:
             print("\ndefault path not found | unix systems not supported on MS Access")
             print("error:", e)

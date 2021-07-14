@@ -63,23 +63,26 @@ uninstall:
 	@rm -rf env
 	@echo "Succesfully uninstalled am-research"
 
-.PHONY: pipe-test
-pipe-test: fetch prep train infer
+.PHONY: pipeline
+pipeline: fetch prep train infer
 
 .PHONY: test
 test: train infer
 
 .PHONY: fetch
 fetch:
-	@$(SYSTEM_PYTHON) $(SRC_ROOT)/fetch_data.py ../data/raw/research_data.accdb interim_data.csv
+	@$(SYSTEM_PYTHON) $(SRC_ROOT)/fetch_data.py ./data/raw/research_data.accdb interim_data.csv
+	@printf "\n"
 
 .PHONY: prep
 prep:
 	@$(SYSTEM_PYTHON) $(SRC_ROOT)/prep_data.py
+	@printf "\n"
 
 .PHONY: train
 train: clean
 	@$(SYSTEM_PYTHON) $(SRC_ROOT)/train.py
+	@printf "\n"
 
 .PHONY: infer
 infer:
@@ -88,4 +91,4 @@ infer:
 .PHONY: clean
 clean:
 	@$(RM) ./models/*
-	@echo "deleting binary files"
+	@printf "deleting prior models\n\n"
