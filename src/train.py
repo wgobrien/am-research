@@ -27,7 +27,7 @@ def train():
     svr_model1 = svm.SVR(kernel='poly', degree=2)
     svr_model1.fit(X, y)
 
-    mlp_regressor = MLPRegressor(hidden_layer_sizes=(5), solver='lbfgs')
+    mlp_regressor = MLPRegressor(hidden_layer_sizes=5, activation='logistic', solver='lbfgs')
     mlp_regressor.fit(X, y)
 
     # EnergyDensityCalculated
