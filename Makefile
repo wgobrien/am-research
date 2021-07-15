@@ -1,21 +1,20 @@
 ROOT_DIR:=(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 REQUIREMENTS=requirements.txt
+
+VENV_ROOT=env
+
 # Detects which OS is being used
 # Only relevant for virtual environment creation
 ifeq ($(OS), Windows_NT)
 	SYSTEM_PYTHON=python
-	VENV_ROOT=env
 	VENV_BIN=$(VENV_ROOT)/Scripts
-	VENV_PIP=$(VENV_BIN)/pip3
-	VENV_PYTHON=$(VENV_BIN)/python
 else
 	SYSTEM_PYTHON=python3
-	VENV_ROOT=env
 	VENV_BIN=$(VENV_ROOT)/bin
-	VENV_PIP=$(VENV_BIN)/pip3
-	VENV_PYTHON=$(VENV_BIN)/python
 endif
 
+VENV_PIP=$(VENV_BIN)/pip3
+VENV_PYTHON=$(VENV_BIN)/python
 SRC_ROOT=src
 
 virtualenv:
@@ -25,7 +24,7 @@ virtualenv:
 	$(VENV_PIP) install --upgrade pip
 	$(VENV_PIP) install -r $(REQUIREMENTS)
 
-all:  uninstall install
+all: uninstall install
 
 install: virtualenv
 	@echo "Installing package into the system"
@@ -91,4 +90,4 @@ infer:
 .PHONY: clean
 clean:
 	@$(RM) ./models/*
-	@printf "deleting prior models\n\n"
+	@printf "deleting prior models\n"

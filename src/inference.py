@@ -35,6 +35,7 @@ def infer():
     svr2_path = os.path.join(models_path, 'svr_model2.sav')
     SVR2 = pickle.load(open(svr2_path, 'rb'))
     SVR2_score = SVR2.score(X, y)
+    print(SVR2.predict([[55]]))
     
     print('---------------------')
     print('SVR Score:', SVR1_score)
