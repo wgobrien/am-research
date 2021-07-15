@@ -27,7 +27,7 @@ def prep(tt_split=.2, seed=100):
     param_data = param_data[["LaserPowerHatch","LaserSpeedHatch","HatchSpacing","LaserPowerContour","EnergyDensityCalculated","Porosity"]]
     
     # normalize porosity
-    param_data.Porosity = param_data.Porosity / param_data.Porosity.sum()
+    #param_data.Porosity = param_data.Porosity / param_data.Porosity.sum()
 
     # test train split, random sampling - LEAVE ALONE
     pct = 1 - tt_split

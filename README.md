@@ -5,6 +5,8 @@ Repository for research in [prediciting material performance of additively manuf
 - Requires GNU make to run Makefile installations, inferences, and other file commands from the parent directory.
 -  `make install` will install dependencies and set up a virtual environment in directory `env/`
   - Activate the enviornment according to your shell requirements listed [here](https://docs.python.org/3/library/venv.html)
+  - Mac/Linux: `source env/bin/activate`
+  - Windows: `.\env\Scripts\activate` or `. env/Scripts/activate` when using Git Bash
 - `make test` will train and run the models using processed data and selected features
 - `make pipe-test` runs the process of fetching data from the MS Access databases, processing & splitting the data into test and train files, training and scoring the models
   - Other make commands are fetch, prep, train, infer
@@ -12,11 +14,8 @@ Repository for research in [prediciting material performance of additively manuf
 
 ### Installs/Requirements
 - Package requirements are provided in requirements.txt
-- On the chance install fails, try an alternative with the main pacakges (excluding dependencies) listed below
-  - Ex] Install worked on my Mac but failed on Windows for some reason, despite pip and python being up to date and working in a conda environment
-- Macro-requirements
-  - pandas, pypyodbc, scikit-learn, tensorflow, matplotlib
-    - Other packages in requirements.txt were installed as dependencies of these packages (numpy for example)
+- Make sure Python is up to date- requirement installs may break down with beta versions (3.10) of python or older versions (>3.6)
+    - Other packages in requirements.txt were installed as dependencies of these packages (numpy for example- I opted out of using `pip freeze` for the sake of simplicity, so numpy is installed but not on the requirements list)
 
 ## Objectives
 - Build a standard for AM processing parameters and material features to generate consistent, high performing parts

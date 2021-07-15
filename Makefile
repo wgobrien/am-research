@@ -90,9 +90,4 @@ infer:
 .PHONY: clean
 clean:
 	@$(RM) ./models/*
-<<<<<<< HEAD
 	@printf "deleting prior models\n"
-=======
-	@printf "deleting prior models\n\n"
-
->>>>>>> 0c363403b84dbd8c694f27f2b951b51bdf599826
