@@ -70,7 +70,7 @@ test: train infer
 
 .PHONY: fetch
 fetch:
-	@$(SYSTEM_PYTHON) $(SRC_ROOT)/fetch_data.py ./data/raw/research_data.accdb interim_data.csv
+	@$(SYSTEM_PYTHON) $(SRC_ROOT)/fetch_data.py ./data/raw/research_data.accdb interim_data
 	@printf "\n"
 
 .PHONY: prep

@@ -14,10 +14,10 @@ def fetch():
     # optional usuage: fetch_data.py <file_path> <file_name>
     
     if argc > 1:
-        # optional: can adjust file path on CL
+        # optional: can adjust file path on command line
         fpath = sys.argv[1]
         out_name = 'interim_data'
-        # optional: can edit file out name on CL
+        # optional: can edit file out name on command line
         if argc == 3:
             out_name = sys.argv[2]
         if argc > 3:

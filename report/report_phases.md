@@ -105,7 +105,19 @@ and high quality parts
   - can use ML techniques to discover defects as they unfold live
     
 ### AM Production
+
 - Manufacturing Planning
   - how do you optimize print times to maximize output and costs
 - Quality control
 - Data security
+
+## Development Notes
+- Outlier Data
+  - Our goal is not to be able to predict the porosity at extreme values, our goal is to
+  optimize build parameters such that we make a high performing part
+  - Why should we look at edge data that deteriorates the performance of the model when we
+  could be achieving higher accuracy with parameter settings we actually care about?
+  - Therefore, when the data tells us that the porosity at certain parameters is extremely high,
+  we can eliminate that data because we are seeking optimal parameters
+    - It should be okay to have the caveat that the model will deteriorate on edge parameters since
+    we will very rarely be wanting to build parts with low performance

@@ -3,8 +3,8 @@
 # William O'Brien 07/08/2021
 
 import pandas as pd
-#from tensorflow.keras.layers import Dense
-#from keras.models import Sequential
+from tensorflow.keras.layers import Dense
+from tensorflow.keras.models import Sequential
 from sklearn.neural_network import MLPRegressor
 from sklearn import svm
 import pickle
@@ -30,18 +30,18 @@ def train():
     svr_model1 = svm.SVR(kernel='poly', degree=2)
     svr_model1.fit(X, y)
     # Multi-layer Perceptor ANN 
-    mlp_regressor = MLPRegressor(hidden_layer_sizes=5, activation='logistic', solver='lbfgs')
+    mlp_regressor = MLPRegressor(hidden_layer_sizes=(5,), activation='logistic', solver='lbfgs')
     mlp_regressor.fit(X, y)
     # NEURAL NETWORK
-    '''
+    
     nn_model = Sequential([
-        Dense(5, activation='logistic',input_shape=X.shape[1:]),
+        Dense(5,input_shape=X.shape[1:]),
         Dense(1)
     ])
 
-    nn_model.compile(loss='mean_squareed_error', optimizer='sgd')
+    nn_model.compile(loss='mean_squared_error', optimizer='sgd')
     nn = nn_model.fit(X, y, epochs=20)
-    '''
+    
     # -----------------------------------------------------------------
     # EnergyDensityCalculated
     X = train_vals[:,-2].reshape(-1,1)
@@ -55,7 +55,7 @@ def train():
     models_path = os.path.join(os.path.dirname(__file__), '../models/')
     pickle.dump(svr_model1, open(os.path.join(models_path, 'svr_model1.sav'), 'wb'))
     pickle.dump(svr_model2, open(os.path.join(models_path, 'svr_model2.sav'), 'wb'))
-    #pickle.dump(nn_model, open(os.path.join(models_path, 'nn_model.sav'), 'wb'))
+    pickle.dump(nn, open(os.path.join(models_path, 'nn_model.sav'), 'wb'))
     pickle.dump(mlp_regressor, open(os.path.join(models_path, 'mlp_regressor.sav'), 'wb'))
 
     print('models built successfully.')

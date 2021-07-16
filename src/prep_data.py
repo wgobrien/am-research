@@ -3,6 +3,7 @@
 # William O'Brien 07/08/2021
 
 import pandas as pd
+from sklearn import preprocessing
 import os
 
 def prep(tt_split=.2, seed=100):
@@ -13,27 +14,38 @@ def prep(tt_split=.2, seed=100):
     f = os.path.join(os.path.dirname(__file__), f'../data/interim/{fname}.csv')
     param_data = pd.read_csv(f)
 
+    # ---------------------------------------------------------------------------
     # data cleaning - EDIT here for custom processing, use Jupyter notebooks as scratch to ensure you are getting expected output and to save dev time
 
-    drop_cols = ["ID","StudySample","HatchOffsetFromCountour", "MicroCTScan", "LayerHeight", "Machine", "Powder"]
+    drop_cols = ["ID","StudySample","HatchOffsetFromCountour", "LaserPowerCountour","HatchSpacing", "MicroCTScan", "Machine", "Powder","LayerHeight"]
     for col in drop_cols:
         try:
-            # dropping unnecessary columns, put into error catching so the program doesn't quit if one of these are already dropped
+            # dropping unnecessary columns, put into error catching so the program doesn't quit if one of these are already dropped or doesnt exist
             param_data = param_data.drop(col, axis=1)
             print(f"dropped {col}")
         except:
             print(f"already dropped {col}")
-    # parameters are ordered before labels
-    param_data = param_data[["LaserPowerHatch","LaserSpeedHatch","HatchSpacing","LaserPowerContour","EnergyDensityCalculated","Porosity"]]
-    
-    # normalize porosity
-    #param_data.Porosity = param_data.Porosity / param_data.Porosity.sum()
+    try:
+        # dropping outliers
+        param_data = param_data.drop([10,14,9], axis=0).reset_index(drop=True)
+    except:
+        print('already dropped outliers')
 
-    # test train split, random sampling - LEAVE ALONE
+    # reorder to put label (Porosity) to make label selection easy (can index last column with [:,-1])
+    param_data = param_data[["LaserPowerHatch","LaserSpeedHatch","EnergyDensityCalculated","Porosity"]]
+    
+    # normalize data
+    print('\n')
+    print(param_data.head())
+    scale = preprocessing.StandardScaler().fit(param_data)
+    param_data = pd.DataFrame(scale.transform(param_data)) 
+
+    # ------------------------------------------------------------------------
+    # test train split, random sampling, train/test exports - can be left alone
     pct = 1 - tt_split
 
-    train_data = param_data.sample(frac=pct, random_state=seed).reset_index()
-    test_data = param_data.drop(train_data.index).sample(frac=1, random_state=seed).reset_index()
+    train_data = param_data.sample(frac=pct, random_state=seed).reset_index(drop=True)
+    test_data = param_data.drop(train_data.index).sample(frac=1, random_state=seed).reset_index(drop=True)
 
     print("\nexporting cleaned data...")
     f_train = os.path.join(os.path.dirname(__file__), '../data/processed/train.csv')
