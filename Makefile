@@ -87,6 +87,10 @@ train: clean
 infer:
 	@$(SYSTEM_PYTHON) $(SRC_ROOT)/inference.py
 
+.PHONY: vis
+vis:
+	@$(SYSTEM_PYTHON) $(SRC_ROOT)/vis.py
+
 .PHONY: clean
 clean:
 	@$(RM) ./models/*

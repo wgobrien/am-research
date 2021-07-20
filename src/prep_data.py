@@ -3,7 +3,6 @@
 # William O'Brien 07/08/2021
 
 import pandas as pd
-from sklearn import preprocessing
 import os
 
 def prep(tt_split=.2, seed=100):
@@ -34,11 +33,9 @@ def prep(tt_split=.2, seed=100):
     # reorder to put label (Porosity) to make label selection easy (can index last column with [:,-1])
     param_data = param_data[["LaserPowerHatch","LaserSpeedHatch","EnergyDensityCalculated","Porosity"]]
     
-    # normalize data
+    # show data in pipeline
     print('\n')
     print(param_data.head())
-    scale = preprocessing.StandardScaler().fit(param_data)
-    param_data = pd.DataFrame(scale.transform(param_data)) 
 
     # ------------------------------------------------------------------------
     # test train split, random sampling, train/test exports - can be left alone
@@ -49,10 +46,10 @@ def prep(tt_split=.2, seed=100):
 
     print("\nexporting cleaned data...")
     f_train = os.path.join(os.path.dirname(__file__), '../data/processed/train.csv')
-    train_data.to_csv(f_train)
+    train_data.to_csv(f_train, index=False)
     
     f_test = os.path.join(os.path.dirname(__file__), '../data/processed/test.csv')
-    test_data.to_csv(f_test)
+    test_data.to_csv(f_test, index=False)
 
     print("\ndata preparation complete")
 
