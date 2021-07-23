@@ -63,10 +63,10 @@ uninstall:
 	@echo "Succesfully uninstalled am-research"
 
 .PHONY: pipeline
-pipeline: fetch prep train infer
+pipeline: fetch prep train nn infer
 
 .PHONY: test
-test: train infer
+test: train nn infer
 
 .PHONY: fetch
 fetch:
@@ -90,6 +90,11 @@ infer:
 .PHONY: vis
 vis:
 	@$(SYSTEM_PYTHON) $(SRC_ROOT)/vis.py
+
+.PHONY: nn
+nn:
+	@printf "Launching tensorflow...\n"
+	@$(SYSTEM_PYTHON) $(SRC_ROOT)/train_nn.py
 
 .PHONY: clean
 clean:

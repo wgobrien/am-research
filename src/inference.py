@@ -23,11 +23,11 @@ def infer():
 
     # load and score models
 
-    svr1_path = os.path.join(models_path, 'svr_model1.pkl')
+    svr1_path = os.path.join(models_path, 'svr_model1.jl')
     SVR1 = joblib.load(svr1_path)
     SVR1_score = SVR1.score(X, y)
 
-    mlp_path = os.path.join(models_path, 'mlp_regressor.pkl')
+    mlp_path = os.path.join(models_path, 'mlp_regressor.jl')
     MLP = joblib.load(mlp_path)
     MLP_score = MLP.score(X, y)
 
@@ -38,7 +38,7 @@ def infer():
     # change parameters to energy density
     X = test_vals[:,-2].reshape(-1,1)
     
-    svr2_path = os.path.join(models_path, 'svr_model2.pkl')
+    svr2_path = os.path.join(models_path, 'svr_model2.jl')
     SVR2 = joblib.load(svr2_path)
     SVR2_score = SVR2.score(X, y)
     print(MLP.predict([[300,1200]]))
