@@ -74,12 +74,12 @@ fetch:
 	@printf "\n"
 
 .PHONY: prep
-prep:
+prep: clean
 	@$(SYSTEM_PYTHON) $(SRC_ROOT)/prep_data.py
 	@printf "\n"
 
 .PHONY: train
-train: clean
+train:
 	@$(SYSTEM_PYTHON) $(SRC_ROOT)/train.py
 	@printf "\n"
 
@@ -98,5 +98,5 @@ nn:
 
 .PHONY: clean
 clean:
-	@$(RM) ./models/*
+	@find models -type f -delete
 	@printf "deleting prior models\n"

@@ -3,12 +3,11 @@
 # William O'Brien 07/08/2021
 
 import pandas as pd
-from sklearn.preprocessing import StandardScaler
-from sklearn import svm
-import matplotlib.pyplot as plt
 import joblib
 import os
 
+from sklearn.preprocessing import StandardScaler
+from sklearn import svm
 
 def train():
 
@@ -40,8 +39,8 @@ def train():
     # -----------------------------------------------------------------
     # export models
     models_path = os.path.join(os.path.dirname(__file__), '../models/')
-    joblib.dump(svr_model1, os.path.join(models_path, 'svr_model1.sav'))
-    joblib.dump(svr_model2, os.path.join(models_path, 'svr_model2.sav'))
+    joblib.dump(svr_model1, os.path.join(models_path, 'svr_model1.pkl'))
+    joblib.dump(svr_model2, os.path.join(models_path, 'svr_model2.pkl'))
 
     print('SVR models exported successfully.')
 

@@ -1,6 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
+from sklearn.preprocessing import MinMaxScaler
 import os
 
 def visualize():
@@ -28,12 +29,13 @@ def visualize():
     cols = ['LaserPowerHatch', 'LaserSpeedHatch', 'EnergyDensityCalculated', 'Porosity']
     fig2 = plt.figure(figsize=(12,8))
     plt.title('Relationships between features and outcomes')
+    param_data.Porosity = MinMaxScaler(feature_range=(0,1200)).fit_transform(param_data.Porosity.values.reshape(-1,1))
     pd.plotting.parallel_coordinates(param_data, class_column='level', cols=cols, color=('#556270', '#4ECDC4'))
     visuals.savefig(fig2)
     plt.show()
 
     # scatter matrix for correlations and histograms
-    pd.plotting.scatter_matrix(param_data[cols], marker='x',figsize=(12,8))
+    pd.plotting.scatter_matrix(param_data[cols], figsize=(12,8))
     plt.suptitle('Correlations Between Features & Distributions')
     visuals.savefig()
     plt.show()

@@ -3,9 +3,13 @@
 # William O'Brien 07/08/2021
 
 import pandas as pd
+import numpy as np
+import joblib
 import os
 
-def prep(tt_split=.2, seed=100):
+from sklearn.preprocessing import StandardScaler, MinMaxScaler
+
+def prep(tt_split=.25, seed=100):
     print("--------------------\nProcessing Data\n--------------------")
 
     # reading in transformed csv data from interim - EDIT fname as needed or read in additional files for cleaning
@@ -34,7 +38,7 @@ def prep(tt_split=.2, seed=100):
     param_data = param_data[["LaserPowerHatch","LaserSpeedHatch","EnergyDensityCalculated","Porosity"]]
     
     # show data in pipeline
-    print('\n')
+    print()
     print(param_data.head())
 
     # ------------------------------------------------------------------------
@@ -44,6 +48,13 @@ def prep(tt_split=.2, seed=100):
     train_data = param_data.sample(frac=pct, random_state=seed).reset_index(drop=True)
     test_data = param_data.drop(train_data.index).sample(frac=1, random_state=seed).reset_index(drop=True)
 
+    # scale data and export scaler models
+    train_data, test_data, sx, sy = transform(train_data, test_data, MinMaxScaler(), StandardScaler())
+    models_path = os.path.join(os.path.dirname(__file__), '../models/scalers')
+
+    joblib.dump(sx, os.path.join(models_path,'X_scale.pkl'))
+    joblib.dump(sy, os.path.join(models_path,'y_scale.pkl'))
+
     print("\nexporting cleaned data...")
     f_train = os.path.join(os.path.dirname(__file__), '../data/processed/train.csv')
     train_data.to_csv(f_train, index=False)
@@ -52,6 +63,29 @@ def prep(tt_split=.2, seed=100):
     test_data.to_csv(f_test, index=False)
 
     print("\ndata preparation complete")
+
+
+def feature_label_join(X, y):
+    df = pd.DataFrame(np.concatenate([X,y], axis=1))
+    df.columns = ['LaserPowerHatch', 'LaserSpeedHatch', 'EnergyDensity', 'Porosity']
+    return df
+
+
+def transform(train_data, test_data, scale_X, scale_y):
+    train_vals = train_data.values
+    test_vals = test_data.values
+
+    X_train = scale_X.fit_transform(train_vals[:,:-1])
+    y_train = scale_y.fit_transform(train_vals[:,-1].reshape(-1, 1))
+
+    X_test = scale_X.transform(test_vals[:,:-1])
+    y_test = scale_y.transform(test_vals[:,-1].reshape(-1, 1))
+
+    train = feature_label_join(X_train, y_train)
+    test = feature_label_join(X_test, y_test)
+
+    return train, test, scale_X, scale_y
+
 
 if __name__ == '__main__':
     prep(tt_split=.25, seed=100)
