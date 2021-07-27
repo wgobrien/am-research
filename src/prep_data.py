@@ -20,7 +20,7 @@ def prep(tt_split=.25, seed=100):
     # ---------------------------------------------------------------------------
     # data cleaning - EDIT here for custom processing, use Jupyter notebooks as scratch to ensure you are getting expected output and to save dev time
 
-    drop_cols = ["ID","StudySample","HatchOffsetFromCountour", "LaserPowerCountour","HatchSpacing", "MicroCTScan", "Machine", "Powder","LayerHeight"]
+    drop_cols = ["ID","StudySample","HatchOffsetFromCountour", "LaserPowerContour","HatchSpacing", "MicroCTScan", "Machine", "Powder","LayerHeight", "EnergyDensityCalculated"]
     for col in drop_cols:
         try:
             # dropping unnecessary columns, put into error catching so the program doesn't quit if one of these are already dropped or doesnt exist
@@ -35,7 +35,7 @@ def prep(tt_split=.25, seed=100):
         print('already dropped outliers')
 
     # reorder to put label (Porosity) to make label selection easy (can index last column with [:,-1])
-    param_data = param_data[["LaserPowerHatch","LaserSpeedHatch","EnergyDensityCalculated","Porosity"]]
+    param_data = param_data[["LaserPowerHatch","LaserSpeedHatch","Porosity"]]
     
     # show data in pipeline
     print()
@@ -48,13 +48,14 @@ def prep(tt_split=.25, seed=100):
     train_data = param_data.sample(frac=pct, random_state=seed).reset_index(drop=True)
     test_data = param_data.drop(train_data.index).sample(frac=1, random_state=seed).reset_index(drop=True)
 
-    # scale data and export scaler models
+    # scale data and export scaler models - can adjust MinMaxScaler or StandardScaler combinations
     train_data, test_data, sx, sy = transform(train_data, test_data, MinMaxScaler(), StandardScaler())
     models_path = os.path.join(os.path.dirname(__file__), '../models/scalers')
 
     joblib.dump(sx, os.path.join(models_path,'X_scale.pkl'))
     joblib.dump(sy, os.path.join(models_path,'y_scale.pkl'))
 
+    # export cleaned data
     print("\nexporting cleaned data...")
     f_train = os.path.join(os.path.dirname(__file__), '../data/processed/train.csv')
     train_data.to_csv(f_train, index=False)
@@ -63,12 +64,6 @@ def prep(tt_split=.25, seed=100):
     test_data.to_csv(f_test, index=False)
 
     print("\ndata preparation complete")
-
-
-def feature_label_join(X, y):
-    df = pd.DataFrame(np.concatenate([X,y], axis=1))
-    df.columns = ['LaserPowerHatch', 'LaserSpeedHatch', 'EnergyDensity', 'Porosity']
-    return df
 
 
 def transform(train_data, test_data, scale_X, scale_y):
@@ -85,6 +80,12 @@ def transform(train_data, test_data, scale_X, scale_y):
     test = feature_label_join(X_test, y_test)
 
     return train, test, scale_X, scale_y
+
+
+def feature_label_join(X, y):
+    df = pd.DataFrame(np.concatenate([X,y], axis=1))
+    df.columns = ['LaserPowerHatch', 'LaserSpeedHatch', 'Porosity']
+    return df
 
 
 if __name__ == '__main__':

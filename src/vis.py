@@ -1,3 +1,7 @@
+#!/usr/bin/python3
+# vis.py
+# William O'Brien 07/14/2021
+
 import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages

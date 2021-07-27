@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-# train.py
+# train_nn.py
 # William O'Brien 07/08/2021
 
 import pandas as pd
@@ -22,7 +22,7 @@ def train_nn():
 
     # -----------------------------------------------------------------
     # LaserPowerHatch, LaserSpeedHatch, HatchSpacing, LaserPowerContour
-    X = train_vals[:,:-2]
+    X = train_vals[:,:-1]
     y = train_vals[:,-1]
 
     # ----------------------------------------------------------------- 
@@ -37,7 +37,7 @@ def train_nn():
     h1 = layers.Dense(5, activation='relu')(in_layer)
     h2 = layers.Dense(5, activation='relu')(h1)
     concat = layers.Concatenate()([in_layer, h2])
-    out = layers.Dense(1)(concat)
+    out = layers.Dense(1, activation='linear')(concat)
     nn_model = models.Model(inputs=[in_layer], outputs=[out])
 
     '''nn_model = models.Sequential([
