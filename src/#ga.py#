@@ -20,7 +20,7 @@ class GeneticAlgorithm:
         '''
         self.model = model
         self.X_scale = X_scale
-        self.y_scale = y_scale 
+        self.y_scale = y_scale
         self.parameters = parameters
         self.boundaries = boundaries
 
@@ -56,7 +56,7 @@ class GeneticAlgorithm:
         input:
             parameters - 1D dictionary of {parameter : value}
         output:
-            prediction of the model given the feature set 
+            prediction of the model given the feature set
         '''
         parameters = self.X_scale.transform([list(parameters.values())])
         prediction = self.y_scale.inverse_transform(self.model.predict(parameters))[0]
@@ -106,7 +106,7 @@ class GeneticAlgorithm:
 
     def sort_population_by_fitness(self, population):
         '''
-        Takes a list of dictionaries (parameter : value pairs) and returns 
+        Takes a list of dictionaries (parameter : value pairs) and returns
         sorted list by model_fitness, smallest to largest val
         '''
         return sorted(population, key=self.model_fitness)
