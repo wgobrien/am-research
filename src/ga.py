@@ -8,7 +8,7 @@ import os
 
 class GeneticAlgorithm:
 
-    def __init__(self, model, X_scale, y_scale, parameters, boundaries, mode='maximize', pop_size=10):
+    def __init__(self, model, X_scale, y_scale, parameters, boundaries, pop_size=10):
         '''
         model - model to evalute fitness on (may need to adjust model_fitness() to work w different models)
         X_scale - Scaler model for features
@@ -18,21 +18,23 @@ class GeneticAlgorithm:
         mode - minimize or maximize input function (porosity=minimize, tensile_strength=maximize)
         pop_size - default=10, number of samples to keep in population at a time
         '''
+
+        # make on initialization of object
         self.model = model
         self.X_scale = X_scale
         self.y_scale = y_scale 
         self.parameters = parameters
         self.boundaries = boundaries
 
-        self.mode = mode
+        # optional changes
         self.pop_size = pop_size
-        self.population = self.generate_population(pop_size)
+        self.population = self.initialize_pop(pop_size)
 
 
-    def generate_population(self, size):
+    def initialize_pop(self, size):
         '''
         input:
-            size - number of feature combinations to generate
+            size - size of the population
         output:
             list of dictionaries with sample parameter values
         '''
@@ -52,7 +54,7 @@ class GeneticAlgorithm:
 
     def model_fitness(self, parameters):
         '''
-        Fitness function
+        Fitness function, sends in a feature set and returns a prediction at that point
         input:
             parameters - 1D dictionary of {parameter : value}
         output:
@@ -61,7 +63,7 @@ class GeneticAlgorithm:
         parameters = self.X_scale.transform([list(parameters.values())])
         prediction = self.y_scale.inverse_transform(self.model.predict(parameters))[0]
 
-        if type(prediction) is list:
+        if type(prediction) is np.ndarray:
             prediction = prediction[0]
 
         if self.mode == 'minimize':
@@ -69,7 +71,7 @@ class GeneticAlgorithm:
         else:
             return prediction
 
-    
+
     def model_predict(self, parameters):
         '''
         Similar to fitness test but doesn't worry about minimization or maximization
@@ -79,97 +81,159 @@ class GeneticAlgorithm:
 
         if type(prediction) is np.ndarray:
             prediction = prediction[0]
-        
+
         return prediction
 
 
-    def choice_by_roulette(self, sorted_population, fitness_sum):
+    def roulette_select(self, sorted, summation):
+        '''
+        Selection technique that gives higher probability of selection based on highest fitness
+        Pros:
+            Free from bias
+        Cons:
+            Risk of premature convergence, requires sorting to scale negative fitness values,
+            depends on variance present in the fitness function
+        '''
         offset = 0
-        normalized_fitness_sum = fitness_sum
 
-        lowest_fitness = self.model_fitness(sorted_population[0])
+        lowest_fitness = self.model_fitness(sorted[0])
         if lowest_fitness < 0:
             offset = -lowest_fitness
-            normalized_fitness_sum += offset * len(sorted_population)
+            summation += offset * len(sorted)
 
         draw = np.random.uniform(0, 1)
 
-        accumulated = 0
-        for individual in sorted_population:
+        range = 0
+        for individual in sorted:
             fitness = self.model_fitness(individual) + offset
-            probability = fitness / normalized_fitness_sum
-            accumulated += probability
+            p = fitness / summation
+            range += p
 
-            if draw <= accumulated:
+            if draw <= range:
                 return individual
 
+    def rank_select(self, sorted, summation):
+        '''
+        Selection technique that gives higher probability of selection to the highest ranks
+        Pros:
+            Free from bias, preserves diversity, faster than roulette in this implementation
+        Cons:
+            Sorting required can be computationally expensive (although this version of roulette
+            also requires sorting)
+        '''
+        range = 0
+        draw = np.random.uniform(0,1)
+        for idx, individual in enumerate(sorted, start=1):
+            p = idx / summation
+            range += p
+            if draw <= range:
+                return individual
 
-    def sort_population_by_fitness(self, population):
+    def sort_pop(self, population):
         '''
         Takes a list of dictionaries (parameter : value pairs) and returns 
         sorted list by model_fitness, smallest to largest val
         '''
         return sorted(population, key=self.model_fitness)
-        
+
 
     def crossover(self, a, b):
         '''
-        crossover function takes two given individuals and returns
-        a dictionary of paramter : value pairs based on averages
+        Crossover function takes two given individuals and returns
+        a dictionary of {paramter : value} pairs based on averages
+        --> Open to ideas for other crossover techniques
         '''
         cross = {}
         for (k,v), (_,v2) in zip(a.items(), b.items()):
             cross[k] = np.mean([v, v2])
-        return cross
+        return self.mutation(cross)
 
 
-    def mutate(self, individual, mutation_rate=.01):
+    def mutation(self, individual):
         '''
         Generates mutation of indiviudal. Mutation can be modified to increase or decrease by a higher amount.
         Mutation currently adjusts values by adding or decreasing by a random number between 5% of the mean of
-        the feature's boundaries. This percentage could be adjusted to shrink dynamically as we approach a solution.
+        the feature's boundaries.
+        --> Open to ideas on ways to dynamically shrink mutation probability, maybe based on rank?
         '''
         x = 0
         for k in individual.keys():
-            bound = mutation_rate*np.mean(self.boundaries[x])
-            individual[k] += np.random.uniform(-bound, bound)
+            bound = self.mutation_rate*np.mean(self.boundaries[x])
+            itr = individual[k] + np.random.uniform(-bound, bound)
+            individual[k] = min( max(itr, self.boundaries[x][0]), self.boundaries[x][1] )
             x += 1
         return individual
 
 
-    def make_next_generation(self, previous_population, mutation_rate=.01):
-        next_generation = []
-        sorted_by_fitness_population = self.sort_population_by_fitness(previous_population)
-        fitness_sum = sum(self.model_fitness(individual) for individual in self.population)
+    def mating_pool(self):
+        '''
+        Generates a new population using selection, crossover, and mutation techniques (mutation occurs in crossover)
+        '''
+        mpool = []
+        sorted = self.sort_pop(self.population)
+
+        if self.select == self.roulette_select:
+            summation = sum(self.model_fitness(individual) for individual in self.population)
+        elif self.select == self.rank_select:
+            summation = sum(range(1, self.pop_size+1))
 
         for _ in range(self.pop_size):
-            x1 = self.choice_by_roulette(sorted_by_fitness_population, fitness_sum)
-            x2 = self.choice_by_roulette(sorted_by_fitness_population, fitness_sum)
+            x1 = self.select(sorted, summation)
+            x2 = self.select(sorted, summation)
+            mpool.append(self.crossover(x1, x2))
 
-            individual = self.crossover(x1, x2)
-            individual = self.mutate(individual, mutation_rate)
-            next_generation.append(individual)
-
-        return next_generation
+        return mpool
 
 
-    def run(self, mutation_rate=.01, generations=100, verbose=False):
+    def run(self, mode='maximize', select='rank', mutation_rate=.01, generations=500, verbose=False):
+        '''
+        inputs:
+            mutation_rate - have the option to set the probability at which an individual mutates
+            generations - set max number of generations to run
+            select - option to choose selection technique between roulette and rank selection
+            verbose - option to print generation #'s and populations for each generation
+        output:
+            Dictionary feature value set of the highest performing individual in the final population
+        '''
+        # set mutation probability before each run
+        if mutation_rate == 'dynamic':
+            self.dynamic = True
+            self.mutation_rate = .02
+        else:
+            self.dynamic = False
+            self.mutation_rate = mutation_rate
+        
+        # set selection technique
+        if select == 'roulette':
+            self.select = self.roulette_select
+        elif select == 'rank':
+            self.select = self.rank_select
+        else:
+            raise ValueError(f'{select} invalid : opt [roulette/rank]')
+
+        # set maximize or minimize function
+        self.mode = mode
+        if mode != 'maximize' and mode != 'minimize':
+            raise ValueError(f'{mode} invalid : opt [maximize/minimize]')
+        
+        # Run the number of generations
         if verbose:
             print('Genetic Algorithm Walk\n----------------------')
         for x in range(generations):
+            self.population = self.mating_pool()
             if verbose:
                 print(f'\nGENERATION {x+1}')
                 for indiviudal in self.population:
                     print(indiviudal)
-            self.population = self.make_next_generation(self.population, mutation_rate)
-        return self.sort_population_by_fitness(self.population)[-1]
+        return self.sort_pop(self.population)[-1]
 
 
     def export(self, best=None):
         '''
         input:
             best - genetic algorithm dictionary output
-        Write output into reports folder
+        Writes output into reports folder
+        If no parameter given, will run genetic algorithm with default parameters
         '''
 
         if best==None:
@@ -215,12 +279,11 @@ if __name__ == '__main__':
     # Create GA object
     parameters = ['LaserPowerHatch', 'LaserSpeedHatch']
     boundaries = [(100,400), (600,1200)]
-    ga = GeneticAlgorithm(SVR, X_scale, y_scale, parameters, boundaries, pop_size=30, mode='minimize')
+    ga = GeneticAlgorithm(SVR, X_scale, y_scale, parameters, boundaries, pop_size=30)
     
-    # Make prediction
+    # Test make prediction
     predict = ga.model_predict({'LaserPowerHatch':300, 'LaserSpeedHatch':1200})
     
     # Run the algorithm to find optimal parameter set
-    best = ga.run(generations=500,verbose=True)
-    ga.export(best) # best is optional, can have export run the algorithm instead
-    
+    best_performer = ga.run(generations=200, verbose=True, select='rank', mode='minimize')
+    ga.export(best_performer) # best is optional, can have export run the algorithm instead

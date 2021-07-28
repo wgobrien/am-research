@@ -53,25 +53,25 @@ def infer():
     # Use genetic algorithm for prediciton and optimization of parameters
     parameters = ['LaserPowerHatch', 'LaserSpeedHatch']
     boundaries = [(100,400), (600,1200)]
-    ga_svr = GeneticAlgorithm(SVR, X_scale, y_scale, parameters, boundaries, pop_size=30, mode='minimize')
-    ga_mlp = GeneticAlgorithm(MLP, X_scale, y_scale, parameters, boundaries, mode='minimize')
-    ga_nn  = GeneticAlgorithm(nn, X_scale, y_scale, parameters, boundaries, mode='minimize')
+    ga_svr = GeneticAlgorithm(SVR, X_scale, y_scale, parameters, boundaries, pop_size=30)
+    ga_mlp = GeneticAlgorithm(MLP, X_scale, y_scale, parameters, boundaries)
+    ga_nn  = GeneticAlgorithm(nn, X_scale, y_scale, parameters, boundaries)
 
     # Predict porosity given feature set
     print('\n=== % Predictions % ===')
-    data_point = {'LaserPowerHatch':385, 'LaserSpeedHatch':1540}
+    data_point = {'LaserPowerHatch': 272, 'LaserSpeedHatch': 1200}
     svr_porosity = ga_svr.model_predict(data_point)
     mlp_porosity = ga_mlp.model_predict(data_point)
-    ga_porosity = ga_nn.model_predict(data_point)
+    nn_porosity = ga_nn.model_predict(data_point)
     print(f'Predict {data_point}')
     print(f'SVR Porosity >>> {round(svr_porosity, 4)}')
     print(f'MLP Porosity >>> {round(mlp_porosity, 4)}')
-    print(f'ANN Porosity >>> {round(ga_porosity, 4)}')
+    print(f'ANN Porosity >>> {round(nn_porosity, 4)}')
     
     # Output optimal parameters
     print('\n=== % Optimal Features % ===')
-    optimal_features = ga_svr.run(generations=500)
-    ga_svr.export(optimal_features)
+    optimal_features = ga_nn.run(mode='minimize', select='rank', mutation_rate='dynamic', generations=200, verbose=True)
+    ga_nn.export(optimal_features)
 
 
 if __name__ == '__main__':
