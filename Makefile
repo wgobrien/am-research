@@ -17,6 +17,8 @@ VENV_PIP=$(VENV_BIN)/pip3
 VENV_PYTHON=$(VENV_BIN)/python
 SRC_ROOT=src
 
+default: pipeline
+
 virtualenv:
 	@echo "Making virtual environment..."
 	@$(SYSTEM_PYTHON) -m venv env
@@ -28,6 +30,7 @@ all: uninstall install
 
 install: virtualenv
 	@echo "Installing package into the system"
+	@mkdir report
 	@$(VENV_PIP) install -e .
 	@echo "====================================================================================== "
 	@echo "                                                                                       "
@@ -63,7 +66,7 @@ uninstall:
 	@echo "Succesfully uninstalled am-research"
 
 .PHONY: pipeline
-pipeline: prep train nn infer
+pipeline: fetch prep train nn infer
 
 .PHONY: test
 test: train nn infer

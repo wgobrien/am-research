@@ -5,11 +5,12 @@
 import pandas as pd
 import numpy as np
 import joblib
+from time import time
 import os
 
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 
-def prep(tt_split=.25, seed=100):
+def prep(tt_split=.25, seed=int(time())):
     print("--------------------\nProcessing Data\n--------------------")
 
     # reading in transformed csv data from interim - EDIT fname as needed or read in additional files for cleaning
@@ -20,7 +21,7 @@ def prep(tt_split=.25, seed=100):
     # ---------------------------------------------------------------------------
     # data cleaning - EDIT here for custom processing, use Jupyter notebooks as scratch to ensure you are getting expected output and to save dev time
 
-    drop_cols = ["ID","StudySample","HatchOffsetFromCountour", "LaserPowerContour","HatchSpacing", "MicroCTScan", "Machine", "Powder","LayerHeight", "EnergyDensityCalculated"]
+    drop_cols = ["ID","StudySample","HatchOffsetFromCountour", "EnergyDensityCalculated", "MicroCTScan", "Machine", "Powder","LayerHeight"]
     for col in drop_cols:
         try:
             # dropping unnecessary columns, put into error catching so the program doesn't quit if one of these are already dropped or doesnt exist
@@ -35,14 +36,14 @@ def prep(tt_split=.25, seed=100):
         print('already dropped outliers')
 
     # reorder to put label (Porosity) to make label selection easy (can index last column with [:,-1])
-    param_data = param_data[["LaserPowerHatch","LaserSpeedHatch","Porosity"]]
+    param_data = param_data[["LaserPowerHatch","LaserSpeedHatch","HatchSpacing","LaserPowerContour","Porosity"]]
     
     # show data in pipeline
     print()
     print(param_data.head())
 
     # ------------------------------------------------------------------------
-    # test train split, random sampling, train/test exports - can be left alone
+    # test train split, random sampling, train/test exports
     pct = 1 - tt_split
 
     train_data = param_data.sample(frac=pct, random_state=seed).reset_index(drop=True)
@@ -51,6 +52,9 @@ def prep(tt_split=.25, seed=100):
     # scale data and export scaler models - can adjust MinMaxScaler or StandardScaler combinations
     train_data, test_data, sx, sy = transform(train_data, test_data, MinMaxScaler(), StandardScaler())
     models_path = os.path.join(os.path.dirname(__file__), '../models/scalers')
+    
+    if not os.path.exists(models_path):
+        os.mkdir(models_path)
 
     joblib.dump(sx, os.path.join(models_path,'X_scale.pkl'))
     joblib.dump(sy, os.path.join(models_path,'y_scale.pkl'))
@@ -84,7 +88,7 @@ def transform(train_data, test_data, scale_X, scale_y):
 
 def feature_label_join(X, y):
     df = pd.DataFrame(np.concatenate([X,y], axis=1))
-    df.columns = ['LaserPowerHatch', 'LaserSpeedHatch', 'Porosity']
+    df.columns = ['LaserPowerHatch', 'LaserSpeedHatch', 'HatchSpacing', 'LaserPowerContour', 'Porosity']
     return df
 
 

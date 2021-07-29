@@ -40,13 +40,14 @@ def train_nn():
     out = layers.Dense(1, activation='linear')(concat)
     nn_model = models.Model(inputs=[in_layer], outputs=[out])
 
-    '''nn_model = models.Sequential([
+    nn_model = models.Sequential([
         layers.Dense(5, input_shape=X.shape[1:], activation='relu'),
         layers.Dense(1)
-    ])'''
+    ])
 
     nn_model.compile(loss='mse', optimizer='sgd')
-    nn_hist = nn_model.fit(X, y, epochs=10)
+    nn_hist = nn_model.fit(X, y, epochs=50, verbose=0)
+    print(nn_model.summary())
 
     # -----------------------------------------------------------------
     # Visualize neural network training history

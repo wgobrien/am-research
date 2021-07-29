@@ -107,7 +107,7 @@ and high quality parts
 ### AM Production
 
 - Manufacturing Planning
-  - how do you optimize print times to maximize output and costs
+  - How do you optimize print times to maximize output and costs?
 - Quality control
 - Data security
 
