@@ -3,6 +3,7 @@ Repository for research in [prediciting material performance of additively manuf
 
 ## Usage
 - Requires GNU make to run Makefile installations, inferences, and other file commands from the parent directory.
+  - Can also invoke the scripts directly with python (or set up a main.py that invokes the methods from each step)
 -  `make install` will install dependencies and set up a virtual environment in directory `env/`
   - Activate the enviornment according to your shell requirements listed [here](https://docs.python.org/3/library/venv.html)
   - Mac/Linux: `source env/bin/activate`
