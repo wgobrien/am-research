@@ -10,7 +10,7 @@ Repository for research in [prediciting material performance of additively manuf
   - Windows: `.\env\Scripts\activate` or `. env/Scripts/activate` when using Git Bash
 - `make test` will train and run the models using processed data and selected features
 - `make pipeline` runs the process of fetching data from the MS Access databases, processing & splitting the data into test and train files, training and scoring the models
-  - Other make commands are fetch, prep, train, infer
+  - Other make commands are fetch, prep, train, infer, vis, ga
 - Source files can be edited as necessary, read commentation for guidance in each step of the pipeline
 
 ### Installs/Requirements
