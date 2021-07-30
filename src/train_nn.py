@@ -9,6 +9,7 @@ import os
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
+import tensorflow.keras as tf
 from tensorflow.keras import layers
 from tensorflow.keras import models
 from sklearn.neural_network import MLPRegressor
@@ -28,11 +29,11 @@ def train_nn():
     # ----------------------------------------------------------------- 
     # NN Model Builds
 
-    ## Sklearn Multi-layer Perceptor ANN 
-    mlp_regressor = MLPRegressor(hidden_layer_sizes=(5,), activation='relu', solver='lbfgs')
+    ## Multi-layer Perceptor ANN 
+    mlp_regressor = MLPRegressor(hidden_layer_sizes=(5,), alpha=.08, activation='relu', solver='lbfgs')
     mlp_regressor.fit(X, y)
 
-    ## TF ANN
+    ## Functional DNN
     in_layer = layers.Input(shape=X.shape[1:])
     h1 = layers.Dense(5, activation='relu')(in_layer)
     h2 = layers.Dense(5, activation='relu')(h1)
@@ -40,8 +41,12 @@ def train_nn():
     out = layers.Dense(1, activation='linear')(concat)
     nn_model = models.Model(inputs=[in_layer], outputs=[out])
 
+    ## Sequential DNN
     nn_model = models.Sequential([
-        layers.Dense(5, input_shape=X.shape[1:], activation='relu'),
+        layers.Dense(5, input_shape=X.shape[1:]
+                    , activation='relu'
+                    , kernel_regularizer=tf.regularizers.L1(0.01)
+                    , activity_regularizer=tf.regularizers.L2(0.08)),
         layers.Dense(1)
     ])
 
@@ -65,6 +70,19 @@ def train_nn():
     nn_model.save(os.path.join(models_path, 'nn_model.h5'))
 
     print('NN models exported successfully.')
+
+
+    print('\nQuick scoring')
+    # read in test data, split parameters and labels
+    test_path = os.path.join(os.path.dirname(__file__), '../data/processed/test.csv')
+    test = pd.read_csv(test_path)
+    test_vals = test.values
+    
+    X_test = test_vals[:,:-1]
+    y_test = test_vals[:,-1]
+
+    print('mlp_score:', mlp_regressor.score(X_test,y_test))
+    print('dnn_score:', nn_model.evaluate(X_test, y_test, verbose=0))
 
 if __name__ == '__main__':
     train_nn()

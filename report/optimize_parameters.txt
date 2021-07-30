@@ -2028,3 +2028,47 @@ Prediction
 ----------
 Porosity: 0.9877581525425461
 ================================================
+
+=================================================
+SVR Model
+-------------------------------------------------
+GA Parameters
+-------------
+Population Size: 100
+Generations: 1000
+Select: rank_select
+Mutation Rate: dynamic >> exploration rate: 0.3
+-------------------------------------------------
+Features
+--------
+LaserPowerHatch: 137.89085163293825
+LaserSpeedHatch: 1200
+HatchSpacing: 0.11451915958902352
+LaserPowerContour: 200
+------------------------------------------------
+Prediction
+----------
+Porosity: -0.03369300433700376
+================================================
+
+=================================================
+SVR Model
+-------------------------------------------------
+GA Parameters
+-------------
+Population Size: 100
+Generations: 1000
+Select: rank_select
+Mutation Rate: dynamic >> exploration rate: 0.3
+-------------------------------------------------
+Features
+--------
+LaserPowerHatch: 137.6459789444768
+LaserSpeedHatch: 1200
+HatchSpacing: 0.11443260161629312
+LaserPowerContour: 200
+------------------------------------------------
+Prediction
+----------
+Porosity: -0.03369346758565986
+================================================
