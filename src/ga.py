@@ -239,6 +239,10 @@ class GeneticAlgorithm:
             x_new = self.crossover(x1, x2)
             mpool.append(self.mutation(x_new, mutation_prob))
 
+        # Keeps the highest performing individual from the previous pool, makes sure
+        # we don't skip past the best individual (allows for higher exploration rates)
+        mpool[-1] = sorted[-1]
+
         return mpool
 
 
@@ -372,12 +376,12 @@ if __name__ == '__main__':
 
     # Create GA object
     parameters = ['LaserPowerHatch', 'LaserSpeedHatch', 'HatchSpacing', 'LaserPowerContour']
-    boundaries = [(272,272), (1200,1200), (.1,.15), (80,220)]
-    ga = GeneticAlgorithm(SVR, X_scale, y_scale, parameters, boundaries, pop_size=50)
+    boundaries = [(100, 400), (600, 1200), (.1,.25), (30,200)]
+    ga = GeneticAlgorithm(SVR, X_scale, y_scale, parameters, boundaries, pop_size=100)
     
     # Test make prediction
     predict = ga.model_predict({'LaserPowerHatch':300, 'LaserSpeedHatch':1200, 'HatchSpacing': .15, 'LaserPowerContour': 140})
     
     # Run the algorithm to find optimal parameter set
-    best_performer = ga.run(mode='minimize', select='rank', mutation_rate='dynamic', generations=1000, exploration=.02, verbose=True)
+    best_performer = ga.run(mode='minimize', select='rank', mutation_rate='dynamic', generations=1000, exploration=.3, verbose=True)
     ga.export(best_performer) # best is optional, can have export run the algorithm instead

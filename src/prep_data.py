@@ -21,12 +21,14 @@ def prep(tt_split=.25, seed=int(time())):
     # ---------------------------------------------------------------------------
     # data cleaning - EDIT here for custom processing, use Jupyter notebooks as scratch to ensure you are getting expected output and to save dev time
 
-    drop_cols = ["ID","StudySample","HatchOffsetFromCountour", "EnergyDensityCalculated", "MicroCTScan", "Machine", "Powder","LayerHeight"]
-    for col in drop_cols:
+    # make sure to order features with LABEL IN THE LAST COLUMN (porosity in this case)
+    features = ["LaserPowerHatch","LaserSpeedHatch","HatchSpacing","LaserPowerContour","Porosity"]
+    for col in param_data.columns:
         try:
             # dropping unnecessary columns, put into error catching so the program doesn't quit if one of these are already dropped or doesnt exist
-            param_data = param_data.drop(col, axis=1)
-            print(f"dropped {col}")
+            if col not in features:
+                param_data = param_data.drop(col, axis=1)
+                print(f"dropped {col}")
         except:
             print(f"already dropped {col}")
     try:
@@ -36,7 +38,7 @@ def prep(tt_split=.25, seed=int(time())):
         print('already dropped outliers')
 
     # reorder to put label (Porosity) to make label selection easy (can index last column with [:,-1])
-    param_data = param_data[["LaserPowerHatch","LaserSpeedHatch","HatchSpacing","LaserPowerContour","Porosity"]]
+    param_data = param_data[features]
     
     # show data in pipeline
     print()
@@ -88,7 +90,6 @@ def transform(train_data, test_data, scale_X, scale_y):
 
 def feature_label_join(X, y):
     df = pd.DataFrame(np.concatenate([X,y], axis=1))
-    df.columns = ['LaserPowerHatch', 'LaserSpeedHatch', 'HatchSpacing', 'LaserPowerContour', 'Porosity']
     return df
 
 

@@ -53,7 +53,7 @@ def infer():
     # Use genetic algorithm for prediciton and optimization of parameters
     parameters = ['LaserPowerHatch', 'LaserSpeedHatch', 'HatchSpacing', 'LaserPowerContour']
     boundaries = [(100, 400), (600, 1200), (.1,.25), (30,200)]
-    ga_svr = GeneticAlgorithm(SVR, X_scale, y_scale, parameters, boundaries, pop_size=30)
+    ga_svr = GeneticAlgorithm(SVR, X_scale, y_scale, parameters, boundaries, pop_size=100)
     ga_mlp = GeneticAlgorithm(MLP, X_scale, y_scale, parameters, boundaries)
     ga_ann  = GeneticAlgorithm(ann, X_scale, y_scale, parameters, boundaries)
 
@@ -63,14 +63,14 @@ def infer():
     svr_porosity = ga_svr.model_predict(data_point)
     mlp_porosity = ga_mlp.model_predict(data_point)
     ann_porosity = ga_ann.model_predict(data_point)
-    print(f'Predict {data_point}')
+    print(f'{data_point}')
     print(f'SVR Porosity >>> {round(svr_porosity, 4)}')
     print(f'MLP Porosity >>> {round(mlp_porosity, 4)}')
     print(f'ANN Porosity >>> {round(ann_porosity, 4)}')
     
     # Output optimal parameters
     print('\n=== % Optimal Features % ===')
-    optimal_features = ga_svr.run(mode='minimize', select='rank', mutation_rate='dynamic', generations=200, exploration=.05)
+    optimal_features = ga_svr.run(mode='minimize', select='rank', mutation_rate='dynamic', generations=1000, exploration=.3)
     ga_svr.export(optimal_features)
 
 
