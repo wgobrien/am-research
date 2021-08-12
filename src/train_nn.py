@@ -45,7 +45,7 @@ def train_nn():
     nn_model = models.Sequential([
         layers.Dense(5, input_shape=X.shape[1:]
                     , activation='relu'
-                    , kernel_regularizer=tf.regularizers.L1(0.01)
+                    , kernel_regularizer=tf.regularizers.L1(0.08)
                     , activity_regularizer=tf.regularizers.L2(0.08)),
         layers.Dense(1)
     ])
@@ -80,6 +80,7 @@ def train_nn():
     
     X_test = test_vals[:,:-1]
     y_test = test_vals[:,-1]
+
 
     print('mlp_score:', mlp_regressor.score(X_test,y_test))
     print('dnn_score:', nn_model.evaluate(X_test, y_test, verbose=0))

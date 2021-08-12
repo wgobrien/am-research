@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/python3A
 # ga.py
 # William O'Brien 07/08/2021
 
@@ -219,8 +219,8 @@ class GeneticAlgorithm:
         elif self.select == self.rank_select:
             # rank selection - sum of the ranks
             summation = sum(range(1, self.pop_size+1))
-
-        for _ in range(self.pop_size):
+            
+        for _ in range(self.pop_size - self.top):
             x1, r1 = self.select(sorted, summation)
             x2, r2 = self.select(sorted, summation)
             
@@ -239,14 +239,14 @@ class GeneticAlgorithm:
             x_new = self.crossover(x1, x2)
             mpool.append(self.mutation(x_new, mutation_prob))
 
-        # Keeps the highest performing individual from the previous pool, makes sure
+        # Keeps the highest performing individuals from the previous pool, makes sure
         # we don't skip past the best individual (allows for higher exploration rates)
-        mpool[-1] = sorted[-1]
-
+        for x in range(1, self.top + 1):
+            mpool.append(sorted[-x])
         return mpool
 
 
-    def run(self, mode='maximize', select='rank', mutation_rate=.01, generations=500, exploration=.1, verbose=False):
+    def run(self, mode='maximize', select='rank', mutation_rate=.01, generations=500, exploration=.1, keep_top=1, verbose=False):
         '''
         inputs:
             mode - minimize or maximize input function (porosity=minimize, tensile_strength=maximize)
@@ -261,6 +261,8 @@ class GeneticAlgorithm:
             vs exploit (higher will try more, might not converge as consistently)
             
             verbose - option to print generation #'s and populations for each generation
+        
+            keep_top - with every generation, keeps the top N individuals for the next generation
         output:
             dictionary feature set of the highest performing individual in the final population
         '''
@@ -284,6 +286,12 @@ class GeneticAlgorithm:
         else:
             raise ValueError(f'{select} invalid : opt [roulette/rank]')
 
+        if keep_top > self.pop_size:
+            print('keep_top greater than population size, defaulting to standard')
+            self.top = 1
+        else:
+            self.top = keep_top
+        
         # set maximize or minimize function
         if mode != 'maximize' and mode != 'minimize':
             raise ValueError(f'{mode} invalid : opt [maximize/minimize]')
@@ -342,17 +350,17 @@ class GeneticAlgorithm:
             f'\nGenerations: {self.gen}'
             f'\nSelect: {self.select.__name__}'
             f'\nMutation Rate: {mr}'
-            f'\n-------------------------------------------------\nFeatures\n--------\n'
+            f'\nKeep Top: {self.top}'
+            f'\n\-------------------------------------------------nFeatures\n--------\n'
             )
-
         for k, v in best.items():
             print(f'{k}: {v}')
             out.write(f'{k}: {v}\n')
 
-        out.write(f'------------------------------------------------'
+        out.write(f'-------------------------------------------------'
             f'\nPrediction\n----------'
             f'\nPorosity: {self.model_predict(best)}'
-            '\n================================================\n'
+            '\n\================================================n'
             )
         print('---------------------------------------\nPorosity:', self.model_predict(best))
         print('=======================================')
@@ -367,7 +375,7 @@ if __name__ == '__main__':
     # Load svr model
     svr1_path = os.path.join(models_path, 'svr_model.pkl')
     SVR = joblib.load(svr1_path)
-    
+
     # Load scaler models for predictions
     X_scale_path = os.path.join(models_path, 'scalers/X_scale.pkl')
     y_scale_path = os.path.join(models_path, 'scalers/y_scale.pkl')
@@ -377,11 +385,11 @@ if __name__ == '__main__':
     # Create GA object
     parameters = ['LaserPowerHatch', 'LaserSpeedHatch', 'HatchSpacing', 'LaserPowerContour']
     boundaries = [(100, 400), (600, 1200), (.1,.25), (30,200)]
-    ga = GeneticAlgorithm(SVR, X_scale, y_scale, parameters, boundaries, pop_size=100)
+    ga = GeneticAlgorithm(SVR, X_scale, y_scale, parameters, boundaries, pop_size=30)
     
     # Test make prediction
     predict = ga.model_predict({'LaserPowerHatch':300, 'LaserSpeedHatch':1200, 'HatchSpacing': .15, 'LaserPowerContour': 140})
-    
+
     # Run the algorithm to find optimal parameter set
-    best_performer = ga.run(mode='minimize', select='rank', mutation_rate='dynamic', generations=1000, exploration=.3, verbose=True)
+    best_performer = ga.run(mode='minimize', select='rank', mutation_rate='dynamic', generations=500, exploration=.3, keep_top=1, verbose=True)
     ga.export(best_performer) # best is optional, can have export run the algorithm instead
