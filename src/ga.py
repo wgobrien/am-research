@@ -4,7 +4,6 @@
 
 import numpy as np
 import joblib
-import random
 import os
 
 class GeneticAlgorithm:
@@ -72,7 +71,7 @@ class GeneticAlgorithm:
             prediction of the model given the feature set (scaler)
         '''
 
-        if callable(self.model):
+        if callable(self.model) and (isinstance(self.model, type(self.model_fitness)) or isinstance(self.model, type(rastrigin))):
             prediction = self.model(parameters)
         else:
             parameters = self.X_scale.transform([list(parameters.values())])
@@ -98,7 +97,8 @@ class GeneticAlgorithm:
         output:
             prediction of the model given the feature set (scaler)
         '''
-        if callable(self.model):
+        
+        if callable(self.model) and (isinstance(self.model, type(self.model_fitness)) or isinstance(self.model, type(rastrigin))):
             prediction = self.model(parameters)
         else:
             parameters = self.X_scale.transform([list(parameters.values())])
@@ -197,8 +197,6 @@ class GeneticAlgorithm:
         Crossover function takes two given individuals and
         returns a dictionary of {paramter : value} pairs based on averages.
 
-        --> Open to ideas for other crossover techniques
-
         input:
             a, b - two individuals to crossover (dictionaries with a feature
             set {parameter : value})
@@ -252,7 +250,7 @@ class GeneticAlgorithm:
         return mpool
 
 
-    def run(self, mode='maximize', select='rank', mutation_rate=.01, generations=500, exploration=.1, keep_top=1, verbose=False):
+    def run(self, mode='maximize', select='rank', mutation_rate='dynamic', generations=500, exploration=.25, keep_top=1, verbose=False):
         '''
         inputs:
             mode - minimize or maximize input function (porosity=minimize, tensile_strength=maximize)
@@ -415,8 +413,8 @@ if __name__ == '__main__':
     #                                        , keep_top=1
     #                                        , verbose=True)
     # ga.export(best_performer) # best is optional, can have export run the algorithm instead
-
-    ga = GeneticAlgorithm(rastrigin, ['x','y', 'z'], [(-5.12,5.12),(-5.12,5.12),(-5.12,5.12)], pop_size=100)
+    print(type(rastrigin))
+    ga = GeneticAlgorithm(rastrigin, ['x','y','z'], [(-5.12,5.12),(-5.12,5.12),(-5.12,5.12)], pop_size=100)
     b, n = ga.run(mode='minimize'
                   , select='rank'
                   , mutation_rate='dynamic'
@@ -425,3 +423,4 @@ if __name__ == '__main__':
                   , keep_top=1
                   , verbose=True)
     ga.export(b)
+    
