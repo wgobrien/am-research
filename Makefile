@@ -72,7 +72,7 @@ test: train nn infer
 
 .PHONY: fetch
 fetch:
-	@$(SYSTEM_PYTHON) $(SRC_ROOT)/fetch_data.py ./data/raw/research_data.accdb interim_data
+	@$(SYSTEM_PYTHON) $(SRC_ROOT)/fetch_data_senvol.py senvol
 	@printf "\n"
 
 .PHONY: prep

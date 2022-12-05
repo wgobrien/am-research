@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-# fetch_data.py
+# fetch_data_accdb.py
 # William O'Brien 07/08/2021
 
 import pypyodbc
@@ -21,7 +21,7 @@ def fetch():
         if argc == 3:
             out_name = sys.argv[2]
         if argc > 3:
-            print('optional usuage: fetch_data.py <file_path> <file_name>')
+            print('optional usuage: fetch_data_accdb.py <file_path> <file_name>')
             exit(1)
     else:
         fpath = '../data/raw/research_data.accdb'

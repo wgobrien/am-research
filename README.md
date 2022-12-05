@@ -26,8 +26,7 @@ Repository for research in [prediciting material performance of additively manuf
 - Experimental additive manufacturing data is expensive to gather and often guarded by paywalls or other barriers, so the goal of this research is to provide a structure for others to follow who can access data to print high performing builds
 - This structure will stand on the ground of past literature in the field and apply machine learning and analytical methods to achieve the goal of creating high quality builds
 - Build ML models using processed data
-  - Data will come from open source areas such as the [NIST database](https://ammd.nist.gov/query-ontology/) and other scraped research papers
-  - `fetch_data.py` assumes usage of MS Access to align with the exisiting practices of the Army
-- Create infrastructure that makes training and testing with new data easy for Army users
-  - Current code is commented to make using this codebase easy, should only require simple edits for specific needs directed by the data
-- Explore patterns and analyze insights, generate final report
+  - Data will come from open source areas such as the [NIST database](https://ammd.nist.gov/query-ontology/), scraped research papers, other public databases
+  - `fetch_data_senvol.py` scrapes data from [Senvol's publically available database](http://senvol.com)
+  - `fetch_data_accb.py` fetches data from Microsoft Access database which stores data from published research papers
+- Create infrastructure that makes training and testing with new data easy for users
